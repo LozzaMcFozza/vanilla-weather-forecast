@@ -16,6 +16,8 @@ function refreshWeather(response) {
   humidityElement.innerHTML = `${response.data.temperature.humidity}%`;
   windElement.innerHTML = `${response.data.wind.speed}km/h`;
   iconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon"/>`;
+
+  getForecast(response.data.city);
 }
 
 function formatDate(date) {
@@ -55,26 +57,37 @@ function handleSearchSubmit(event) {
   let searchInput = document.querySelector("#search-bar-input");
   searchCity(searchInput.value);
 }
-let searchFunctionElement = document.querySelector("#search-function");
-searchFunctionElement.addEventListener("submit", handleSearchSubmit);
 
-function displayForecast() {
+function getForecast(city) {
+  let apiKey = "a5tbfe342e99647c146b3o3b0ff80356";
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}&unit=metric`;
+  axios.get(apiUrl).then(displayForecast);
+}
+
+function displayForecast(response) {
   let days = ["Tue", "Wed", "Thu", "Fri", "Sat"];
-  let forecastHTML = "";
+  let forecastHtml = "";
 
   days.forEach(function (day) {
-    forecastHTML += (
+    forecastHtml =
+      forecastHtml +
+      `
       <div class="weather-forecast-day">
         <div class="weather-forecast-date">${day}</div>
-        <div class="weather-forecast-icon">⛅</div>
+        <div class="weather-forecast-icon">🌤️</div>
         <div class="weather-forecast-temperatures">
-          <div class="weather-forecast-temp-max">10°C</div>
-          <div class="weather-forecast-temp-min">3°C</div>
+          <div class="weather-forecast-temp-max">
+            <strong>15º</strong>
+          </div>
+          <div class="weather-forecast-temp-min">9º</div>
         </div>
       </div>
-    );
+    `;
   });
 
   let forecastElement = document.querySelector("#weather-forecast");
-  forecastElement.innerHTML = forecastHTML;
+  forecastElement.innerHTML = forecastHtml;
 }
+
+let searchFunctionElement = document.querySelector("#search-function");
+searchFunctionElement.addEventListener("submit", handleSearchSubmit);
